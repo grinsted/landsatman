@@ -10,6 +10,7 @@ import os
 import glob
 import subprocess
 import re
+import fnmatch
 
 def parsesceneid(sceneid):
 	#sanitize and split sceneid 
@@ -32,10 +33,10 @@ def isdownloaded(sceneid):
 def download(sceneid):
 	#sceneid example = LC80080122014305LGN00
 	scene=parsesceneid(sceneid)
-	localfolder=os.path.split(scene['localfilename'])
+	localfolder=os.path.split(scene['localfilename'])[0]
 	tarbzfile = scene['localfilename'] + '.tar.bz'
 	if isdownloaded(sceneid): return 'OK'
-	errorcode = subprocess.call(['gsutil', 'cp', '-n' , scene['url'] , scene['localfilename'] + '.tar.bz'])
+	errorcode = subprocess.call(['gsutil', 'cp', '-n' , scene['url'] , tarbzfile])
 	if errorcode: return 'download error'
 	errorcode = subprocess.call(['tar', '-xjf', tarbzfile, '-C', localfolder]) #extract to same folder
 	if errorcode: return 'untar error'
