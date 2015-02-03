@@ -41,7 +41,7 @@ def status():
         else:
             del app.tasks[jobkey]
         jobs.update({jobkey: result})
-        print jobkey + ':' + result
+        print '%s : %s' % (jobkey ,result)
     return json_response({"jobs": jobs, "timestamp": time.time()})
 
 
