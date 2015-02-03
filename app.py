@@ -29,7 +29,6 @@ def fetch(sceneid):
     ref = tasks.fetch(sceneid)
     task={'ref': ref, 'timestamp': time.time()};
     app.tasks.update({jobkey: task})
-    job_submit(ref, "fetch", sceneid=sceneid)
     return json_response()
 
 @app.route('/status')
