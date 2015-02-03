@@ -11,5 +11,5 @@ settings={
 'targetfolder': '/landsat'
 }
 
-# på cicdisk:
+# on cicdisk:
 # /cicdisk/groups/landsat
