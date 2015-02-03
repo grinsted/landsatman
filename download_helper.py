@@ -53,7 +53,7 @@ def searchscenes(pattern):
 	matches=set() 
 	for root, dir, files in os.walk(settings['targetfolder']):
 	        for filename in fnmatch.filter(files, pattern):
-	        	if os.path.getsize(os.path.join(root,filename)>100e6:
+	        	if os.path.getsize(os.path.join(root,filename))>100e6:
 	        		sceneid= re.search('^[a-zA-Z0-9]+',filename).group(0);
 	        		matches |= {sceneid} #Union 
 	return matches
