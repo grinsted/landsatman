@@ -18,14 +18,14 @@ def json_response(data=None, status="ok"):
 
 @app.route('/')
 def index():
-    return render_template('index.html', status=app.status)
+    return render_template('index.html')
 
 @app.route('/fetch/<sceneid>')
 def fetch(sceneid):
     # start the background job
     jobkey = 'fetch/'+sceneid;
-    if jobkey in tasks:
-        if tasks[jobkey]['ref'].get(): return json_response()
+    if jobkey in app.tasks:
+        if app.tasks[jobkey]['ref'].get() is None: return json_response() #already in queue
     ref = tasks.fetch(sceneid)
     task={'ref': ref, 'timestamp': time.time()};
     app.tasks.update({jobkey: task})
