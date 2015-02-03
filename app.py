@@ -35,7 +35,7 @@ def fetch(sceneid):
 @app.route('/status')
 def status():
     jobs = collections.OrderedDict()
-    for jobkey in tasks:
+    for jobkey in app.tasks:
         result = app.tasks[jobkey]['ref'].get()
         if result is None:
             result='Active'

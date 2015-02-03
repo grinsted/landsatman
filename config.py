@@ -8,7 +8,8 @@ huey = Huey(queue, result_store=result_store)
 
 settings={
 'gsurl': 'gs://earthengine-public/landsat',
-'targetfolder': 'landsatarchive'
+'targetfolder': '/landsat'
 }
 
-
+# på cicdisk:
+# /cicdisk/groups/landsat
