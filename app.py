@@ -47,7 +47,7 @@ def status():
 
 @app.route('/search/<partial>')
 def search(partial):
-    return json_response({"matches": download_helper.searchscenes(partial)})
+    return json_response({"matches": list(download_helper.searchscenes(partial))})
 
 
 
