@@ -9,6 +9,7 @@ import re
 import os
 import glob
 import subprocess
+import re
 
 def parsesceneid(sceneid):
 	#sanitize and split sceneid 
@@ -31,27 +32,33 @@ def isdownloaded(sceneid):
 def download(sceneid):
 	#sceneid example = LC80080122014305LGN00
 	scene=parsesceneid(sceneid)
-	if isdownloaded(sceneid): return scene['localfilename']
-	errorcode = subprocess.call(['gsutil', 'cp', '-n', scene['url'], scene['localfilename'] + '.tar.bz'])
-	if errorcode: return False
-	return scene['localfilename']
-
-
-def repack(sceneid):
-	scene=parsesceneid(sceneid)
 	localfolder=os.path.split(scene['localfilename'])
 	tarbzfile = scene['localfilename'] + '.tar.bz'
+	if isdownloaded(sceneid): return 'OK'
+	errorcode = subprocess.call(['gsutil', 'cp', '-n' , scene['url'] , scene['localfilename'] + '.tar.bz'])
+	if errorcode: return 'download error'
 	errorcode = subprocess.call(['tar', '-xjf', tarbzfile, '-C', localfolder]) #extract to same folder
-	if not errorcode:
-		#TODO: delete tarbzfile
-		for file in glob.glob(scene['localfilename'] + '_*.TIF'):
-			filepath = os.path.splitext(file)[0];
-			errorcode = subprocess.call(['gdal_translate', '-co', 'COMPRESS=DEFLATE', '-co', 'tiled=yes', file, filepath+'.tiff']) #Notice extension change! -> used to detect compression
-			#if not errorcode: os.remove(file) # TODO: delete the TIF file if compression went ok.
-
-	return True
-
+	if errorcode: return 'untar error'
+	#TODO: delete tarbzfile
+	for file in glob.glob(scene['localfilename'] + '_*.TIF'):
+		filepath = os.path.splitext(file)[0];
+		errorcode = subprocess.call(['gdal_translate', '-co', 'COMPRESS=DEFLATE', '-co', 'tiled=yes', file, filepath+'.tiff']) #Notice extension change! -> used to detect compression so we waste time recompressing old
+		if errorcode: return 'gdal_translate error' 
+		#if not errorcode: os.remove(file) # TODO: delete the TIF file if compression went ok.
+	return 'OK'
     #gdal_translate -co "COMPRESS=DEFLATE" -co tiled=yes "LC80080122014305LGN00_B8.TIF" "LC80080122014305LGN00_B8.tif"  %should the "TIF/tif" case be used to flag if it has been compressed. 
+
+
+def searchscenes(pattern):
+	matches=set() 
+	for root, dir, files in os.walk(settings['targetfolder']):
+	        for filename in fnmatch.filter(files, pattern):
+	        	if os.path.getsize(os.path.join(root,filename)>100e6:
+	        		sceneid= re.search('^[a-zA-Z0-9]+',filename).group(0);
+	        		matches |= {sceneid} #Union 
+	return matches
+
+
    
 
 
